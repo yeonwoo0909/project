@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>유저 랭킹</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            display: flex;
+            flex-direction: row;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 10px 0;
+            display: block;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+            background-color: #444;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f5f5f5;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .ranking-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+
+        .ranking-container h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        table th,
+        table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table th {
+            background-color: #4b4c4d;
+            color: #fff;
+            text-align: center;
+        }
+
+        table td {
+            text-align: center;
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Quich!</h2>
+        <a href="create-problems.html">문제 출제</a>
+        <a href="solve-problems.html">문제 풀이</a>
+        <a href="search.html">정답 검색</a>
+        <a href="ranking.html">유저 랭킹</a>
+        <a href="info.html">설정</a>
+        <a href="login.html">로그아웃</a>
+    </div>
+    <div class="main-content">
+        <div class="ranking-container">
+            <h1>유저 랭킹</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>닉네임</th>
+                        <th>점수</th>
+                    </tr>
+                </thead>
+                <tbody id="ranking-table">
+                    <!-- JavaScript에서 사용자 데이터로 동적 추가 -->
+                </tbody>
+            </table>
+            <a href="dashboard.html">처음으로</a>
+        </div>
+    </div>
+    <script src="ranking.js"></script>
+</body>
+
+</html>

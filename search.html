@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <script src="https://kit.fontawesome.com/cf112bfab0.js" crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제 검색</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 10px 0;
+            display: block;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+            background-color: #444;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .search-box {
+            height: 60px;
+            width: 700px;
+            background: #fff;
+            border-radius: 40px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+        }
+
+        .search-txt {
+            border: none;
+            background: none;
+            outline: none;
+            color: black;
+            font-size: 16px;
+            line-height: 30px;
+            width: 100%;
+        }
+
+        .search-btn {
+            color: #ddd;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            font-size: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .search-btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+            transition: transform 0.2s;
+        }
+
+        .search-list,
+        .selected-problem-set-container,
+        .answer-container {
+            width: 700px;
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-list ul,
+        .selected-problem-set-container ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .search-list li,
+        .selected-problem-set-container li {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            cursor: pointer;
+        }
+
+        .search-list li:hover,
+        .selected-problem-set-container li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .answer-container {
+            display: none;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .back-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Quich!</h2>
+        <a href="create-problems.html">문제 출제</a>
+        <a href="solve-problems.html">문제 풀이</a>
+        <a href="search.html">정답 검색</a>
+        <a href="ranking.html">유저 랭킹</a>
+        <a href="info.html">설정</a>
+        <a href="login.html">로그아웃</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- 검색창 -->
+        <div class="search-box">
+            <input class="search-txt" type="text" id="search-input" placeholder="검색 할 문제 묶음 제목 또는 문제 내용을 검색하세요.">
+            <button class="search-btn" id="search-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
+        <!-- 검색 결과: 문제 묶음 목록 모드 -->
+        <div class="search-list" id="problem-set-list-container">
+            <h2>문제 묶음 목록</h2>
+            <ul id="problem-set-list"></ul>
+        </div>
+
+        <!-- 선택된 문제 묶음의 문제 목록 모드 -->
+        <div class="search-list" id="selected-problem-set-container" style="display: none;">
+            <h2 id="selected-set-title">문제 묶음 제목</h2>
+            <ul id="selected-set-problem-list"></ul>
+            <a href="#" class="back-btn" id="back-to-set-list-btn">뒤로 가기</a>
+        </div>
+
+        <!-- 정답 보기 모드 -->
+        <div class="answer-container" id="answer-container">
+            <h2 id="selected-problem-title">문제 내용</h2>
+            <p id="selected-problem-description">문제 설명</p>
+            <p style="color: green;" id="selected-problem-answer">정답: 답변 내용</p>
+            <a href="#" class="back-btn" id="back-btn">뒤로 가기</a>
+        </div>
+    </div>
+
+    <script>
+        // 문제 세트를 로컬스토리지에서 가져오기
+        function getProblemSetsFromLocalStorage() {
+            const storedSets = localStorage.getItem("problemSets");
+            return storedSets ? JSON.parse(storedSets) : [];
+        }
+
+        // 특정 문제 묶음의 문제 목록 가져오기
+        function getProblemsFromSet(problemSetTitle) {
+            const problemSets = getProblemSetsFromLocalStorage();
+            const selectedSet = problemSets.find(set => set.title === problemSetTitle);
+            return selectedSet ? selectedSet.problems : [];
+        }
+
+        // 문제 풀이 기록 데이터 가져오기
+        function getProblemsData() {
+            const problemsData = localStorage.getItem("problemsData");
+            return problemsData ? JSON.parse(problemsData) : [];
+        }
+
+        // 현재 로그인한 유저 가져오기
+        const currentUser = localStorage.getItem("currentUser");
+        console.log("Current User:", currentUser); // 로그 추가
+
+        // HTML 요소 참조
+        const problemSetListContainer = document.getElementById("problem-set-list-container");
+        const problemSetList = document.getElementById("problem-set-list");
+        const selectedProblemSetContainer = document.getElementById("selected-problem-set-container");
+        const selectedSetTitle = document.getElementById("selected-set-title");
+        const selectedSetProblemList = document.getElementById("selected-set-problem-list");
+        const backToSetListBtn = document.getElementById("back-to-set-list-btn");
+        const answerContainer = document.getElementById("answer-container");
+        const selectedProblemTitle = document.getElementById("selected-problem-title");
+        const selectedProblemDescription = document.getElementById("selected-problem-description");
+        const selectedProblemAnswer = document.getElementById("selected-problem-answer");
+        const backBtn = document.getElementById("back-btn");
+
+        // 현재 선택된 문제 묶음 제목을 저장하는 변수
+        let currentSetTitle = null;
+
+        // 문제 묶음 목록 표시 함수
+        function displayProblemSets(filteredSets = null) {
+            problemSetList.innerHTML = "";
+            problemSetListContainer.style.display = "block";
+            selectedProblemSetContainer.style.display = "none";
+            answerContainer.style.display = "none";
+
+            const problemSets = filteredSets || getProblemSetsFromLocalStorage();
+
+            if (problemSets.length === 0) {
+                problemSetList.innerHTML = "<li>등록된 문제 묶음이 없습니다.</li>";
+                return;
+            }
+
+            problemSets.forEach(set => {
+                const listItem = document.createElement("li");
+                listItem.textContent = set.title; // 문제 번호 제거
+                listItem.setAttribute('data-set-title', set.title);
+
+                // 클릭 이벤트: 문제 묶음을 클릭하면 해당 묶음의 문제 목록 표시
+                listItem.addEventListener("click", () => {
+                    displayProblemsInSet(set.title);
+                });
+
+                problemSetList.appendChild(listItem);
+            });
+        }
+
+        // 문제 묶음 선택 함수
+        function displayProblemsInSet(setTitle) {
+            currentSetTitle = setTitle; // 현재 선택된 문제 묶음 제목 저장
+            selectedSetTitle.textContent = setTitle;
+            selectedSetProblemList.innerHTML = "";
+            problemSetListContainer.style.display = "none";
+            selectedProblemSetContainer.style.display = "block";
+            answerContainer.style.display = "none";
+
+            const problems = getProblemsFromSet(setTitle);
+
+            if (problems.length === 0) {
+                selectedSetProblemList.innerHTML = "<li>해당 문제 묶음에 문제가 없습니다.</li>";
+                return;
+            }
+
+            problems.forEach(problem => {
+                const listItem = document.createElement("li");
+                listItem.textContent = `${problem.description}`; // 문제 번호 제거
+                listItem.setAttribute('data-problem-id', problem.id);
+
+                // 클릭 이벤트: 문제를 클릭하면 정답 보기로 전환
+                listItem.addEventListener("click", () => {
+                    showAnswer(problem);
+                });
+
+                selectedSetProblemList.appendChild(listItem);
+            });
+        }
+
+        // 정답 보기 화면 표시 함수
+        function showAnswer(problem) {
+            selectedProblemTitle.textContent = `${problem.description}`; // 문제 번호 제거
+            selectedProblemDescription.textContent = problem.description;
+            selectedProblemAnswer.textContent = `정답: ${problem.answer}`;
+            problemSetListContainer.style.display = "none";
+            selectedProblemSetContainer.style.display = "none";
+            answerContainer.style.display = "block";
+        }
+
+        // 뒤로 가기 버튼 클릭 이벤트
+        backToSetListBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            displayProblemSets();
+        });
+
+        backBtn.addEventListener("click", (event) => {
+            event.preventDefault();
+            if (currentSetTitle) {
+                displayProblemsInSet(currentSetTitle); // 문제 묶음 목록으로 돌아가지 않고 문제 목록으로 돌아감
+            } else {
+                displayProblemSets(); // 예외 상황: currentSetTitle이 없을 경우 문제 묶음 목록으로 돌아감
+            }
+        });
+
+        // 문제 검색 기능
+        document.getElementById("search-btn").addEventListener("click", () => {
+            const searchInput = document.getElementById("search-input").value.trim();
+            const problemSets = getProblemSetsFromLocalStorage();
+
+            if (searchInput === "") {
+                displayProblemSets();
+                return;
+            }
+
+            // 문제 묶음 제목 또는 문제 내용으로 검색
+            const filteredSets = problemSets.filter(set =>
+                set.title.toLowerCase().includes(searchInput.toLowerCase()) ||
+                set.problems.some(problem => problem.description.toLowerCase().includes(searchInput.toLowerCase()))
+            );
+            console.log("Filtered Sets:", filteredSets); // 로그 추가
+
+            if (filteredSets.length === 0) {
+                alert("검색 결과가 없습니다.");
+            }
+
+            // 검색 결과 표시
+            displayProblemSets(filteredSets);
+        });
+
+        // 엔터 키로 검색 가능하게 설정
+        document.getElementById("search-input").addEventListener("keypress", (event) => {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                document.getElementById("search-btn").click();
+            }
+        });
+
+        // 페이지 로드 시 문제 묶음 목록 표시
+        window.onload = function () {
+            displayProblemSets();
+        };
+    </script>
+</body>
+
+</html>

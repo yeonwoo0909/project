@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>설정 - Quich</title>
+    <!-- Google Fonts 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 아이콘 추가 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 기본 스타일링 */
+        body {
+            margin: 0;
+            font-family: 'Roboto', sans-serif;
+            background-color: #686565;
+            /* 고정 배경색 */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            /* 상단 정렬로 변경 */
+            min-height: 100vh;
+            padding: 20px;
+            /* 상단 여백 추가 */
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            padding: 30px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: left;
+            color: #333;
+            /* 고정 텍스트 색상 */
+            margin-bottom: 20px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section h3 {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+            color: #333;
+            /* 고정 텍스트 색상 */
+        }
+
+        form {
+            text-align: left;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 16px;
+            text-align: left;
+            color: #333;
+            /* 고정 텍스트 색상 */
+        }
+
+        input[type="email"],
+        input[type="text"],
+        input[type="file"] {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 0 15px 0;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: block;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #686565;
+            /* 고정 버튼 색상 */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+            font-size: 1em;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #121212;
+            /* 호버 시 버튼 색상 변경 */
+        }
+
+        .danger-button {
+            background-color: #ea1e33;
+            /* 고정 위험 버튼 색상 */
+        }
+
+        .danger-button:hover {
+            background-color: #a92b37;
+            /* 호버 시 위험 버튼 색상 변경 */
+        }
+
+        a {
+            text-decoration: none;
+            color: #007bff;
+            display: block;
+            text-align: left;
+            margin-top: 10px;
+            font-size: 16px;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* 프로필 사진 업로드 섹션 */
+        .profile-picture-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 30px;
+            /* 프로필 섹션 하단 여백 추가 */
+        }
+
+        .profile-picture-section img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #ddd;
+            margin-bottom: 15px;
+        }
+
+        .profile-picture-section input[type="file"],
+        .profile-picture-section button {
+            width: auto;
+            max-width: none;
+            display: block;
+            margin: 10px auto 15px auto;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            button {
+                width: 100%;
+                margin: 10px 0;
+            }
+
+            .danger-button {
+                margin-right: 0;
+            }
+
+            .profile-picture-section img {
+                width: 120px;
+                height: 120px;
+            }
+
+            .profile-picture-section input[type="file"],
+            .profile-picture-section button {
+                width: 100%;
+                max-width: none;
+                display: block;
+                margin: 10px auto 15px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h2>설정</h2>
+
+        <!-- 프로필 사진 업로드 섹션 -->
+        <div class="section profile-picture-section">
+            <h3>프로필 사진 변경</h3>
+            <img id="current-avatar" src="images/default-avatar.png" alt="프로필 사진">
+            <input type="file" id="avatar-input" accept="image/*">
+            <button type="button" onclick="uploadAvatar()">업로드</button>
+        </div>
+
+        <!-- 기본 정보 관리 -->
+        <div class="section">
+            <h3>기본 정보 관리</h3>
+            <form>
+                <label for="email">이메일 변경</label>
+                <input type="email" id="email" placeholder="새 이메일 입력">
+
+                <button type="button" style="margin-bottom: 20px;" onclick="saveInfo()">저장</button>
+
+                <label for="nickname">닉네임 변경</label>
+                <input type="text" id="nickname" placeholder="새 닉네임 입력">
+
+                <button type="button" onclick="saveInfo()">저장</button>
+            </form>
+        </div>
+
+        <!-- 비밀번호 변경 -->
+        <div class="section">
+            <h3>비밀번호 관리</h3>
+            <button type="button" onclick="window.location.href='change-password.html'">비밀번호 변경</button>
+        </div>
+
+        <!-- 계정 보호 질문 변경 -->
+        <div class="section">
+            <h3>보안 관련</h3>
+            <form>
+                <label for="security-question">보호 질문 변경</label>
+                <input type="text" id="security-question" placeholder="새 보호 질문 입력">
+
+                <label for="security-answer">답변</label>
+                <input type="text" id="security-answer" placeholder="답변 입력">
+
+                <button type="button" onclick="saveSecurityQuestion()">저장</button>
+            </form>
+        </div>
+
+        <!-- 회원 탈퇴 -->
+        <div class="section">
+            <h3>회원 탈퇴</h3>
+            <button class="danger-button" type="button" onclick="deleteAccount()">회원 탈퇴</button>
+        </div>
+
+        <a href="dashboard.html">뒤로 가기</a>
+    </div>
+
+    <script>
+        const currentUser = localStorage.getItem("currentUser");
+
+        // 초기 프로필 사진 설정
+        const avatarDataUrl = localStorage.getItem(currentUser + "_avatar");
+        const currentAvatar = document.getElementById("current-avatar");
+        if (avatarDataUrl) {
+            currentAvatar.src = avatarDataUrl;
+        } else {
+            currentAvatar.src = "images/default-avatar.png"; // 기본 아바타 이미지 경로
+        }
+
+        // 정보 저장 함수
+        function saveInfo() {
+            const email = document.getElementById('email').value.trim();
+            const nickname = document.getElementById('nickname').value.trim();
+
+            if (email) {
+                localStorage.setItem(currentUser + "_email", email);
+            }
+
+            if (nickname) {
+                localStorage.setItem(currentUser + "_nickname", nickname);
+                updateDashboardNickname(nickname);
+            }
+
+            alert("정보가 저장되었습니다!");
+        }
+
+        // 대시보드 닉네임 업데이트 함수
+        function updateDashboardNickname(nickname) {
+            // 대시보드 페이지에 접근하여 닉네임 업데이트
+            // 여기서는 간단하게 새로고침을 통해 대시보드에 반영되도록 합니다.
+            alert("닉네임이 변경되었습니다. 대시보드를 새로고침해주세요.");
+        }
+
+        // 계정 보호 질문 저장 함수
+        function saveSecurityQuestion() {
+            const question = document.getElementById('security-question').value.trim();
+            const answer = document.getElementById('security-answer').value.trim();
+
+            if (question && answer) {
+                localStorage.setItem(currentUser + "_question", question);
+                localStorage.setItem(currentUser + "_answer", answer);
+                alert("계정 보호 질문이 저장되었습니다!");
+            } else {
+                alert("모든 항목을 입력해주세요.");
+            }
+        }
+
+        // 회원 탈퇴 함수
+        function deleteAccount() {
+            if (confirm("정말로 계정을 삭제하시겠습니까?")) {
+                // 1. 사용자 데이터 삭제
+                localStorage.removeItem(currentUser);
+                localStorage.removeItem(currentUser + "_email");
+                localStorage.removeItem(currentUser + "_nickname");
+                localStorage.removeItem(currentUser + "_question");
+                localStorage.removeItem(currentUser + "_answer");
+                localStorage.removeItem(currentUser + "_avatar");
+
+                // 2. 사용자가 생성한 문제 묶음 삭제
+                let problemSets = JSON.parse(localStorage.getItem("problemSets")) || [];
+                problemSets = problemSets.filter(set => set.creator !== currentUser);
+                localStorage.setItem("problemSets", JSON.stringify(problemSets));
+
+                // 3. 사용자의 문제 풀이 기록 삭제
+                let problemsData = JSON.parse(localStorage.getItem("problemsData")) || [];
+                problemsData = problemsData.filter(entry => entry.username !== currentUser);
+                localStorage.setItem("problemsData", JSON.stringify(problemsData));
+
+                alert("계정이 삭제되었습니다.");
+                localStorage.removeItem("currentUser"); // 현재 사용자 제거
+                window.location.href = "login.html";
+            }
+        }
+
+        // 프로필 사진 업로드 함수
+        function uploadAvatar() {
+            const avatarInput = document.getElementById('avatar-input');
+            const file = avatarInput.files[0];
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const dataUrl = e.target.result;
+                    // 로컬스토리지에 저장
+                    localStorage.setItem(currentUser + "_avatar", dataUrl);
+                    // 프로필 사진 업데이트
+                    document.getElementById("current-avatar").src = dataUrl;
+                    alert("프로필 사진이 업데이트되었습니다!");
+                };
+                reader.readAsDataURL(file);
+            } else {
+                alert("이미지를 선택해주세요.");
+            }
+        }
+    </script>
+</body>
+
+</html>

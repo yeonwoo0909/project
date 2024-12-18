@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>문제 풀이 웹 앱</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            min-height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 20px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            color: #ccc;
+            text-decoration: none;
+            margin: 10px 0;
+            display: block;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        .sidebar a:hover {
+            color: #fff;
+            background-color: #444;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .current-problem {
+            flex: 1;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            background-color: #fff;
+            border-radius: 5px;
+        }
+
+        .problem-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .problem-header .status {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .problem-description {
+            margin-top: 10px;
+            font-size: 1.1em;
+        }
+
+        .code-editor {
+            margin-top: 20px;
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .code-editor textarea {
+            width: 100%;
+            height: 200px;
+            resize: none;
+            font-family: monospace;
+        }
+
+        .submit-btn,
+        .hint-btn {
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Ranking Panel */
+        .ranking {
+            margin-left: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .ranking h2 {
+            margin-bottom: 10px;
+        }
+
+        .ranking-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .ranking-item:last-child {
+            border-bottom: none;
+        }
+
+        /* Hint Button Click */
+        .hint-btn:hover {
+            background-color: #0056b3;
+        }
+
+        /* Click Unavailable */
+        .submit-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+        /* Hint Button Active */
+        .hint-btn.hint-active {
+            background-color: #0056b3;
+            color: #ffffff;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Quich!</h2>
+        <a href="#quich.html">현재 문제</a>
+        <a href="#ranking">유저 랭킹</a>
+        <a href="#problem">문제 출제</a>
+        <a href="search.html">정답 검색</a>
+        <a href="info.html">설정</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <div class="header">
+            <h1>문제 풀이 웹 앱 Quich</h1>
+            <div class="user-profile">
+                <span>알림</span> | <span>프로필</span>
+            </div>
+        </div>
+
+        <!-- Current Problem Display -->
+        <div class="current-problem" id="problem">
+            <div class="problem-header">
+                <h2>문제 1</h2>
+                <span class="status">1/5</span>
+            </div>
+            <div class="problem-description">
+                <p>문제 문제 문제 문제</p>
+            </div>
+        </div>
+
+        <!-- Code Editor -->
+        <div class="code-editor">
+            <h2>문제 풀이</h2>
+            <textarea placeholder="여기에 코드를 작성하세요..."></textarea>
+            <button class="submit-btn">제출</button>
+        </div>
+    </div>
+
+    <!-- Ranking Panel -->
+    <div class="ranking" id="ranking">
+        <h2>유저 랭킹</h2>
+        <div class="ranking-item">
+            <span>1. 유저A</span>
+            <span>점수: 100</span>
+        </div>
+        <div class="ranking-item">
+            <span>2. 유저B</span>
+            <span>점수: 95</span>
+        </div>
+        <div class="ranking-item">
+            <span>3. 유저C</span>
+            <span>점수: 90</span>
+        </div>
+        <div class="ranking-item">
+            <span>4. 유저D</span>
+            <span>점수: 85</span>
+        </div>
+        <div class="ranking-item">
+            <span>5. 유저E</span>
+            <span>점수: 80</span>
+        </div>
+    </div>
+    <script>
+        document.querySelector('.submit-btn').addEventListener('click', function () {
+            const userCode = document.querySelector('textarea').value;
+            if (userCode.trim() === "") {
+                alert("코드를 작성해주세요!");
+            }
+            else {
+                // 제출 후 UI 피드백 메시지
+                const resultDiv = document.createElement('div');
+                resultDiv.textContent = "코드가 성공적으로 제출되었습니다!";
+                alert("작성하신 코드가 성공적으로 제출되었습니다!");
+                resultDiv.style.color = "green";
+                document.querySelector('.current-problem').appendChild(resultDiv);
+
+                // 제출 버튼 비활성화
+                document.querySelector('.submit-btn').disabled = true;
+                // 텍스트 입력 필드 초기화
+                document.querySelector('textarea').value = "";
+
+                // 서버에 데이터를 전송하거나 로직 추가
+                console.log("usercode:", userCode);
+            }
+        });
+        // 힌트 버튼 생성
+        const hintButton = document.createElement('button');
+        hintButton.textContent = "힌트 보기";
+        hintButton.className = "hint-btn";
+        document.querySelector('.current-problem').appendChild(hintButton);
+
+        // 힌트를 담을 div 생성 (초기에는 숨김 상태)
+        const hintDiv = document.createElement('div');
+        hintDiv.textContent = "힌트: 문제를 주의 깊게 읽고 접근하세요!";
+        hintDiv.style.color = "blue";
+        hintDiv.style.marginTop = "10px";
+        hintDiv.style.display = "none"; // 처음에는 숨겨진 상태
+        document.querySelector('.current-problem').appendChild(hintDiv);
+
+        // 힌트 버튼 클릭 이벤트 처리
+        hintButton.addEventListener('click', function () {
+            if (hintDiv.style.display === "none") {
+                // 힌트를 보이게 설정
+                hintDiv.style.display = "block";
+                hintButton.textContent = "힌트 숨기기"; // 버튼 텍스트 변경
+                hintButton.classList.add("hint-active");// 활성화 클래스 추가
+            }
+            else {
+                // 힌트를 숨기게 설정
+                hintDiv.style.display = "none";
+                hintButton.textContent = "힌트 보기"; // 버튼 텍스트 변경
+                hintButton.classList.remove("hint-active"); // 활성화 클래스 제거
+            }
+        });
+    </script>
+</body>
+
+</html>

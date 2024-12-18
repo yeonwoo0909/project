@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 페이지</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #686565;
+        }
+
+        .container {
+            width: 320px;
+            padding: 20px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input {
+            width: calc(100% - 20px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            background-color: #686565;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #393636;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>회원가입</h1>
+        <form id="register-form">
+            <label for="username">아이디</label>
+            <input type="text" id="username" required>
+
+            <label for="email">이메일</label>
+            <input type="email" id="email" required>
+
+            <label for="nickname">닉네임</label>
+            <input type="text" id="nickname" required>
+
+            <label for="password">비밀번호</label>
+            <input type="password" id="password" required>
+
+            <label for="confirm-password">비밀번호 확인</label>
+            <input type="password" id="confirm-password" required>
+
+            <label for="security-answer">보호 질문: 좋아하는 색은?</label>
+            <input type="text" id="security-answer" required>
+
+            <button type="submit">회원가입</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('register-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const nickname = document.getElementById('nickname').value.trim();
+            const password = document.getElementById('password').value.trim();
+            const confirmPassword = document.getElementById('confirm-password').value.trim();
+            const securityAnswer = document.getElementById('security-answer').value.trim();
+
+            if (password !== confirmPassword) {
+                alert("비밀번호가 일치하지 않습니다.");
+                return;
+            }
+
+            // 아이디 중복 확인
+            if (localStorage.getItem(username)) {
+                alert("이미 사용 중인 아이디입니다.");
+                return;
+            }
+
+            // 필수 항목 확인
+            if (!email || !nickname) {
+                alert("이메일과 닉네임은 필수 입력 항목입니다.");
+                return;
+            }
+
+            // 사용자 정보 저장
+            localStorage.setItem(username, password);
+            localStorage.setItem(username + "_email", email);
+            localStorage.setItem(username + "_nickname", nickname);
+            localStorage.setItem(username + "_answer", securityAnswer);
+
+            alert("회원가입이 완료되었습니다!");
+            window.location.href = "login.html";
+        });
+    </script>
+</body>
+
+</html>

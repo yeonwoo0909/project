@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>대시보드 - Quich</title>
+    <!-- Google Fonts 추가 -->
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome 아이콘 추가 -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        /* 기본 스타일링 */
+        :root {
+            --primary-color: #686565;
+            --secondary-color: #363333;
+            --background-color: #686565;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        body {
+            background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 대시보드 컨테이너 */
+        .dashboard-container {
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        /* 타이틀 */
+        .dashboard-container h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: var(--text-color);
+        }
+
+        .dashboard-container h2 {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+            color: var(--text-color);
+        }
+
+        /* 사용자 프로필 */
+        .user-profile {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .user-avatar {
+            width: 100px;
+            height: 100px;
+            background-color: #444647;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        /* 링크 버튼 */
+        .dashboard-container a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            padding: 12px 20px;
+            margin: 10px 0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .dashboard-container a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        /* 아이콘 스타일 */
+        .dashboard-container a i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 600px) {
+            .dashboard-container {
+                padding: 30px 20px;
+            }
+
+            .dashboard-container h1 {
+                font-size: 1.8em;
+            }
+
+            .dashboard-container h2 {
+                font-size: 1em;
+            }
+
+            .dashboard-container a {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+
+            .user-avatar {
+                width: 80px;
+                height: 80px;
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- 사용자 프로필 섹션 -->
+        <div class="user-profile">
+            <div class="user-avatar" id="user-avatar">
+                <!-- 사용자 첫 글자 표시 (예: U for User) -->
+                <span id="user-initial">U</span>
+            </div>
+            <h2>환영합니다, <span id="user-nickname">유저</span>님!</h2>
+        </div>
+
+        <!-- 기능 링크 버튼들 -->
+        <a href="create-problems.html">
+            <i class="fas fa-plus-circle"></i> 문제 출제
+        </a>
+        <a href="solve-problems.html">
+            <i class="fas fa-pencil-alt"></i> 문제 풀이
+        </a>
+        <a href="search.html">
+            <i class="fas fa-search"></i> 정답 검색
+        </a>
+        <a href="ranking.html">
+            <i class="fas fa-chart-line"></i> 유저 랭킹
+        </a>
+        <a href="info.html">
+            <i class="fas fa-cog"></i> 설정
+        </a>
+        <a href="login.html">
+            <i class="fas fa-sign-out-alt"></i> 로그아웃
+        </a>
+    </div>
+
+    <script>
+        // 현재 로그인한 유저의 닉네임 표시
+        const currentUser = localStorage.getItem("currentUser");
+        const nickname = localStorage.getItem(currentUser + "_nickname") || currentUser;
+        document.getElementById("user-nickname").textContent = nickname;
+
+        // 사용자 이니셜 표시
+        const userInitial = nickname.charAt(0).toUpperCase();
+        document.getElementById("user-initial").textContent = userInitial;
+
+        // 사용자 아바타 이미지 표시
+        const avatarDataUrl = localStorage.getItem(currentUser + "_avatar");
+        const userAvatarElement = document.getElementById("user-avatar");
+        if (avatarDataUrl) {
+            userAvatarElement.innerHTML = `<img src="${avatarDataUrl}" alt="User Avatar">`;
+        }
+    </script>
+</body>
+
+</html>
